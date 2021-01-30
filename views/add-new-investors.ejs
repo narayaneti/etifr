@@ -50,7 +50,7 @@
         </div>-->
         <!-- /.card-header -->
         <!-- form start -->
-        <form action="add-new-investors" method="post" enctype="multipart/form-data">
+        <form id="add-new-investors" action="add-new-investors" method="post" enctype="multipart/form-data">
         <!-- <form action="add-new-investors" id="add-new-investors" method="post"> -->
           <div class="card-body">
             <div class="row">
@@ -81,32 +81,32 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="investor_name">Investor Name *</label>
-                  <input type="name" name="investor_name" class="form-control" id="investor_name" placeholder="Enter Investor Name">
+                  <input type="name" required name="investor_name" class="form-control" id="investor_name" placeholder="Enter Investor Name">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="investor_mobile">Investor Mobile Number *</label>
-                  <input type="tel" name="investor_mobile" class="form-control" id="investor_mobile" placeholder="Enter Investor Mobile Number">
+                  <input type="tel" required name="investor_mobile" class="form-control" id="investor_mobile" placeholder="Enter Investor Mobile Number" title="Enter valid mobile number" minlength="5" maxlength="10" size="10" autocomplete="off" pattern="[6789][0-9]{9}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="investor_address">Investor Address *</label>
-                  <input type="text" name="investor_address" class="form-control" id="investor_address" placeholder="Enter Investor Address">
+                  <input type="text" required name="investor_address" class="form-control" id="investor_address" placeholder="Enter Investor Address">
                 </div>
               </div>
               
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="invested_amount">Invested Amount *</label>
-                  <input type="text" name="invested_amount" class="form-control" id="invested_amount" placeholder="Enter Invested Amount">
+                  <input type="text" required name="invested_amount" class="form-control" id="invested_amount" placeholder="Enter Invested Amount">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="rate_of_interest">Rate of Interest *</label>
-                  <input type="text" name="rate_of_interest" class="form-control" id="rate_of_interest" placeholder="Enter Rate of Interest">
+                  <input type="text" required name="rate_of_interest" class="form-control" id="rate_of_interest" placeholder="Enter Rate of Interest">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -114,7 +114,7 @@
                   <label for="tenure_period_of_investment_month">Tenure/Period of Investment *</label>
                   <div class="row">
                     <div class="col-6">
-                      <select class="form-control" name="tenure_period_of_investment_month" id="tenure_period_of_investment_month">
+                      <select class="form-control" required name="tenure_period_of_investment_month" id="tenure_period_of_investment_month">
                         <option value="">Select Month</option>
                         <option value="1">January</option>
                         <option value="2">February</option>
@@ -131,8 +131,8 @@
                       </select>
                     </div>
                     <div class="col-6">
-                      <select class="form-control" name="tenure_period_of_investment_year" id="tenure_period_of_investment_year">
-                        <option value="1">Select Year</option>
+                      <select class="form-control" required name="tenure_period_of_investment_year" id="tenure_period_of_investment_year">
+                        <option value="">Select Year</option>
                         <option value="2021">2021</option>
                         <option value="2022">2022</option>
                         <option value="2023">2023</option>
@@ -147,7 +147,7 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="interest_pay_out_frequencies">Interest Pay-out Frequencies *</label>
-                  <select class="form-control" name="interest_pay_out_frequencies" id="interest_pay_out_frequencies">
+                  <select class="form-control" required name="interest_pay_out_frequencies" id="interest_pay_out_frequencies">
                     <option value="">Select Frequencies</option>
                     <option value="1">Monthly</option>
                     <option value="3">Quarterly</option>
@@ -160,25 +160,25 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="interest_amount_to_be_paid_in_each_interval">Interest Amount to be paid in each interval *</label>
-                  <input type="text" name="interest_amount_to_be_paid_in_each_interval" class="form-control" id="interest_amount_to_be_paid_in_each_interval" placeholder="Enter Interest Amount to be paid in each interval">
+                  <input type="text" required name="interest_amount_to_be_paid_in_each_interval" class="form-control" id="interest_amount_to_be_paid_in_each_interval" placeholder="Enter Interest Amount to be paid in each interval">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="investor_account_no">Investor Account No. *</label>
-                  <input type="text" name="investor_account_no" class="form-control" id="investor_account_no" placeholder="Enter Investor Account No.">
+                  <input type="text" required name="investor_account_no" class="form-control" id="investor_account_no" placeholder="Enter Investor Account No." pattern="[0-9]{11,16}" title="Enter vailid account number">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="account_ifsc_code">Account IFSC Code *</label>
-                  <input type="text" name="account_ifsc_code" class="form-control" id="account_ifsc_code" placeholder="Enter Account IFSC Code">
+                  <input type="text" required name="account_ifsc_code" class="form-control" id="account_ifsc_code" placeholder="Enter Account IFSC Code" size="11" maxlength="11" pattern="[A-Za-z0-9]{11,}" title="Enter vailid ifsc code">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="pan_card_no">PAN Card Number *</label>
-                  <input type="text" name="pan_card_no" class="form-control" id="pan_card_no" placeholder="Enter PAN Card Number">
+                  <input type="text" required name="pan_card_no" class="form-control" id="pan_card_no" placeholder="Enter PAN Card Number" size="10" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter vailid pancard no">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -186,7 +186,7 @@
                   <label for="pan_card_copy">PAN Card Copy *</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input name="pan_card_copy" type="file" class="custom-file-input" id="pan_card_copy">
+                      <input name="pan_card_copy" required type="file" accept="image/*" class="custom-file-input" id="pan_card_copy">
                       <label class="custom-file-label" for="pan_card_copy">Choose file</label>
                     </div>
                   </div>
@@ -242,26 +242,62 @@
       $(".alert").alert('close');
     }, 10000);
     
-  $('#add-new-admin').validate({
+  $('#add-new-investors').validate({
     rules: {
-      name: {
+      investor_name: {
         required: true,
       },
-      employee_id: {
+      investor_mobile: {
         required: true,
       },
-      mobile: {
+      investor_address: {
         required: true
       },
-      designation: {
+      invested_amount: {
+        required: true
+      },
+      rate_of_interest: {
+        required: true,
+      },
+      tenure_period_of_investment_month: {
+        required: true,
+      },
+      tenure_period_of_investment_year: {
+        required: true
+      },
+      interest_pay_out_frequencies: {
+        required: true
+      },
+      interest_amount_to_be_paid_in_each_interval: {
+        required: true,
+      },
+      investor_account_no: {
+        required: true,
+      },
+      account_ifsc_code: {
+        required: true
+      },
+      pan_card_no: {
+        required: true
+      },
+      pan_card_copy: {
         required: true
       },
     },
     messages: {
-      name:"Please enter a name",
-      employee_id:"Please enter a employee id",
-      mobile:"Please enter a mobile Number",
-      designation: "Please enter a designation"
+      investor_name:"Please enter a investor name",
+      investor_mobile:"Please enter a investor mobile",
+      investor_address:"Please enter a investor address",
+      invested_amount: "Please enter a invested amount",
+      rate_of_interest:"Please enter a rate of interest",
+      tenure_period_of_investment_month:"Please select a tenure period of investment month",
+      tenure_period_of_investment_year:"Please select a tenure period of investment year",
+      interest_pay_out_frequencies: "Please select a interest pay out frequencies",
+      interest_amount_to_be_paid_in_each_interval:"Please enter a interest amount to be paid in each interval",
+      investor_account_no:"Please enter a investor account no",
+      account_ifsc_code: "Please enter a account ifsc code",
+      pan_card_no:"Please enter a pan card no",
+      pan_card_copy:"Please enter a pan card copy",
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {
@@ -276,11 +312,7 @@
     }
   });
 
-  $('#add-new-investors').on('submit',function(e){
-    //e.preventDefault(); 
-    var form = $(this);
-    console.log(form.serialize());
-  });
+  
 });
 </script>
 </body>
