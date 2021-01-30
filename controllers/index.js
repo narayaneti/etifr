@@ -217,7 +217,7 @@ exports.admin_list=(req,res,next)=>{
     if(req.params.action=='deactivate'){
       query.status=2;
     }else if(req.params.action=='activate'){
-      query.status=2;
+      query.status=1;
     }else if(req.params.action=='delete'){
       query.status=0;
     }
