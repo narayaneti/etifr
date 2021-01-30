@@ -101,7 +101,16 @@
                   <input type="text" name="designation" class="form-control" id="designation" placeholder="Designation">
                 </div>
               </div>
-              
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="role">Role *</label>
+                  <select name="admin_type" id="role" required class="form-control">
+                    <option value="">Select Role</option>
+                    <option value="1">Supar Admin</option>
+                    <option value="2">Admin</option>
+                  </select>
+                </div>
+              </div>
               
             </div>
           </div>
@@ -164,12 +173,16 @@
       designation: {
         required: true
       },
+      admin_type: {
+        required: true
+      },
     },
     messages: {
       name:"Please enter a name",
       employee_id:"Please enter a employee id",
       mobile:"Please enter a mobile Number",
-      designation: "Please enter a designation"
+      designation: "Please enter a designation",
+      admin_type: "Please enter a role"
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {

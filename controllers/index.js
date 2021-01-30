@@ -19,71 +19,88 @@ function data_decript(data,hash){
 function enter(req,res) {
   if(!req.session.admin_id){
     res.redirect('/');
-  }
+  } 
 }
 
 exports.index=function(req, res, next) {
-    res.render('login'); 
+    res.render('login',{req:req,}); 
 }
 
 exports.login=function(req,res,next){
     const v = new Validator(req.body, {
         mobile: 'required|integer',
-        password: 'required|string'
+        password: 'required|string',
+        admin_type: 'required|integer',
       });
       v.check().then((matched) => {
         if (!matched) {
-          res.render('login',{errors:v.errors});
+          res.render('login',{req:req,errors:v.errors});
         }
       });
-      var query = { mobile: req.body.mobile };
+      var query = { mobile: req.body.mobile,admin_type:req.body.admin_type };
       db.select_one_detail_by_condition('admin',query,function(result){
             if(result){
                 if(data_decript(req.body.password,result.password)){
                   req.session.admin_id=result._id;
-                  if(result.password_change==0){
-                    res.redirect('/first-password-change');
-                  }else{
-                    res.redirect('/dashboard');
+                  req.session.admin_type=result.admin_type;
+                  req.session.name=result.name;
+                  console.log(req.session)
+                  if(result.status==1){
+                    if(result.password_change==0){
+                      res.redirect('/first-password-change');
+                    }else{
+                      res.redirect('/dashboard');
+                    }
+                  }else if(result.status==2){
+                    res.render('login',{req:req,errors:{password:{message:"You account deactive!"}}});
+                  }else if(result.status==0){
+                    res.render('login',{req:req,errors:{password:{message:"You account delete!"}}});
                   }
                 }else{
-                    res.render('login',{errors:{password:{message:"Invalid password!"}}});
+                    res.render('login',{req:req,errors:{password:{message:"Invalid password!"}}});
                 }
                 
             }else{
                 var err={mobile:{message:"Mobile Number not register"}};
-                res.render('login',{errors:err});
+                res.render('login',{req:req,errors:err});
             }
       });
 }
 
+exports.logout=(req,res,next)=>{
+  req.session.destroy();
+  res.redirect('/');
+}
+
 exports.forgot_password=function(req,res,next){
   if(req.method=='GET'){
-    res.render('forgot-password');
+    res.render('forgot-password',{req:req});
   }else{
     const v = new Validator(req.body, {
       mobile: 'required|integer',
+      admin_type: 'required|integer',
     });
     v.check().then((matched) => {
       if (!matched) {
-        res.render('forgot-password',{errors:v.errors});
+        res.render('forgot-password',{req:req,errors:v.errors});
       }
     });
-    var query = { mobile: req.body.mobile };
+    var query = { mobile: req.body.mobile,admin_type: req.body.admin_type };
     db.select_one_detail_by_condition('admin',query,function(user_detail){
-      if(user_detail.length > 0){
+      console.log(user_detail);
+      if(user_detail){
         var mobile=req.body.mobile;
         //var otp=rn({min:1000,max:9999,integer: true});
         var otp=1111;
         helper.send_otp(otp,mobile,function(resp){
-          req.session.forgot_password={mobile:mobile,otp:otp};
+          req.session.forgot_password={mobile:mobile,otp:otp,admin_type:req.body.admin_type};
           res.redirect('/forgot-password-change');
         });
         
       }else{
         var err={mobile:{message:"Mobile Number not register"}};
-        res.render('forgot-password',{errors:err});
-      }
+        res.render('forgot-password',{req:req,errors:err});
+      } 
     });
   }
 }
@@ -91,7 +108,7 @@ exports.forgot_password=function(req,res,next){
 exports.forgot_password_change=(req,res,next)=>{
   if(req.method=='GET'){
     if(req.session.forgot_password){
-      res.render('forgot-password-change');
+      res.render('forgot-password-change',{req:req});
     }else{
       res.redirect('/forgot-password');
     }
@@ -110,18 +127,18 @@ exports.forgot_password_change=(req,res,next)=>{
     v.check().then((matched) => {
       if (!matched) {
         console.log(v);
-        res.render('forgot-password-change',{errors:v.errors});
+        res.render('forgot-password-change',{req:req,errors:v.errors});
       }else{
         var forgot_password=req.session.forgot_password;
         if(forgot_password.otp==req.body.otp){
           var password=data_encript(req.body.password);
-          db.update_detail_by_condition('admin',{ mobile:forgot_password.mobile },{password:password},function(result) {
+          db.update_detail_by_condition('admin',{ mobile:forgot_password.mobile,admin_type:forgot_password.admin_type },{password:password},function(result) {
             delete req.session.forgot_password;
             res.redirect('/');
           })
         }else{
           var err={otp:{message:"OTP not match."}};
-          res.render('forgot-password-change',{errors:err});
+          res.render('forgot-password-change',{req:req,errors:err});
         }
       }
     });
@@ -144,31 +161,32 @@ exports.dashboard=(req,res,next)=>{
   enter(req,res);
   db.table_data_count(['admin','investors'],function (result) {
     console.log(result);
-    res.render('dashboard',{count:result});
+    res.render('dashboard',{req:req,count:result});
   })
   
 }
 
 exports.add_new_admin=(req,res,next)=>{
-  //enter(req,res);
+  enter(req,res);
   if(req.method=='GET'){
-    res.render('add-new-admin');
+    res.render('add-new-admin',{req:req});
   }else{
     const v = new Validator(req.body, {
       name: 'required|string',
       employee_id: 'required|string',
       mobile: 'required|string',
-      designation: 'required|string'
+      designation: 'required|string',
+      admin_type: 'required|string'
     });
     v.check().then((matched) => {
       if (!matched) {
         console.log(v);
-        res.render('add-new-admin',{errors:v.errors});
+        res.render('add-new-admin',{req:req,errors:v.errors});
       }else{
-        db.select_one_detail_by_condition('admin',{mobile:req.body.mobile},function (result){
+        db.select_one_detail_by_condition('admin',{mobile:req.body.mobile,admin_type:req.body.admin_type},function (result){
           if(result){
             var err={mobile:{message:"Mobile Number alrady register"}};
-            res.render('add-new-admin',{errors:err});
+            res.render('add-new-admin',{req:req,errors:err});
           }else{
             var query={
               name:req.body.name,
@@ -177,12 +195,12 @@ exports.add_new_admin=(req,res,next)=>{
               designation:req.body.designation,
               insert_admin_id:req.session.admin_id,
               password:data_encript('Aa@1'),
-              admin_type:1
+              admin_type:req.body.admin_type
             }
             db.insert_data('admin',query,function (result) {
               console.log(result);
               var err={mobile:{message:"Admin added successfully"}};
-              res.render('add-new-admin',{messages:err});
+              res.render('add-new-admin',{req:req,messages:err});
             });
           }
         });
@@ -208,19 +226,19 @@ exports.admin_list=(req,res,next)=>{
       db.update_detail_by_condition('admin',{_id:req.params.id},query,function(result){
         console.log(result);
         db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
-          res.render('admin-list',{admin_deatils:result});
+          res.render('admin-list',{req:req,admin_deatils:result});
         });
       });
     }else{
       console.log('hello1');
       db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
-        res.render('admin-list',{admin_deatils:result});
+        res.render('admin-list',{req:req,admin_deatils:result});
       });
     }
   }else{
     console.log('hello2');
     db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
-      res.render('admin-list',{admin_deatils:result});
+      res.render('admin-list',{req:req,admin_deatils:result});
     });
   }
 }
@@ -228,18 +246,18 @@ exports.admin_list=(req,res,next)=>{
 exports.add_new_investors=(req,res,next)=>{
   enter(req,res);
   if(req.method=='GET'){
-    res.render('add-new-investors');
+    res.render('add-new-investors',{req:req});
   }else{
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
       console.log(files);
       if(files.pan_card_copy.size==0){
         var err={pan_card:{message:"pan card copy required!"}};
-        res.render('add-new-investors',{errors:err});
+        res.render('add-new-investors',{req:req,errors:err});
       }else{
         if (!files.pan_card_copy.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
           var err={pan_card:{message:"Only jpg/jpge/png files are allowed!"}};
-          res.render('add-new-investors',{errors:err});
+          res.render('add-new-investors',{req:req,errors:err});
         }else{
           var oldpath = files.pan_card_copy.path;
           var image_name=rn(54,100000)+files.pan_card_copy.name;
@@ -261,7 +279,7 @@ exports.add_new_investors=(req,res,next)=>{
             });
             v.check().then((matched) => {
               if (!matched) {
-                res.render('add-new-investors',{errors:v.errors});
+                res.render('add-new-investors',{req:req,errors:v.errors});
               }else{
                 fs.copyFile(oldpath, newpath, function (err) {
                   if (err) throw err;
@@ -269,7 +287,7 @@ exports.add_new_investors=(req,res,next)=>{
                   fields.insert_admin_id=req.session.admin_id;
                   db.insert_data('investors',fields,function(result) {
                     var messages={pan_card:{message:"success"}};
-                    res.render('add-new-investors',{messages:messages});
+                    res.render('add-new-investors',{req:req,messages:messages});
                   })
                   
                 });
@@ -285,17 +303,17 @@ exports.add_new_investors=(req,res,next)=>{
 exports.investors_list=(req,res,next)=>{
   enter(req,res);
   db.select_detail_by_condition('investors',{status:{ $ne: 0 }},function(result){
-    res.render('investors-list',{investors_deatils:result});
+    res.render('investors-list',{req:req,investors_deatils:result});
   });
 }
 
 exports.edit_investors=(req,res,next)=>{
-  //enter(req,res);
+  enter(req,res);
   if(req.params.id){
     db.select_one_detail_by_condition('investors',{_id:req.params.id},function(result) {
       if(result){
         if(req.method=='GET'){
-          res.render('edit-investors',{investors_deatil:result});
+          res.render('edit-investors',{req:req,investors_deatil:result});
         }else{
           const v = new Validator(req.body, {
             investor_name: 'required|string',
@@ -311,11 +329,11 @@ exports.edit_investors=(req,res,next)=>{
           });
           v.check().then((matched) => {
             if (!matched) {
-              res.render('edit-investors',{errors:v.errors,investors_deatil:result});
+              res.render('edit-investors',{req:req,errors:v.errors,investors_deatil:result});
             }else{
               db.update_detail_by_condition('investors',{_id:req.params.id},req.body,function(resu) {
                 var messages={pan_card:{message:"update successfully!"}};
-                res.render('edit-investors',{messages:messages,investors_deatil:result});
+                res.render('edit-investors',{req:req,messages:messages,investors_deatil:result});
               })
             }
           });
@@ -332,7 +350,7 @@ exports.edit_investors=(req,res,next)=>{
 exports.first_password_change=(req,res,next)=>{
   enter(req,res);
   if(req.method=='GET'){
-    res.render('first-password-change');
+    res.render('first-password-change',{req:req});
   }else{
     const v = new Validator(req.body, {
       password: 'required|string',
@@ -344,7 +362,7 @@ exports.first_password_change=(req,res,next)=>{
     v.check().then((matched) => {
       if (!matched) {
         console.log(v);
-        res.render('first-password-change',{errors:v.errors});
+        res.render('first-password-change',{req:req,errors:v.errors});
       }else{
         var password=data_encript(req.body.password);
           db.update_detail_by_condition('admin',{ _id:req.session.admin_id },{password:password,password_change:1},function(result) {
@@ -360,7 +378,7 @@ exports.profile=(req,res,next)=>{
   enter(req,res);
   db.select_detail_by_condition('admin',{_id:req.session.admin_id},function(result){
     if(result.length>0){
-      res.render('profile',{user:result[0]}); 
+      res.render('profile',{req:req,user:result[0]}); 
     }else{
       req.session.destroy;
       res.redirect('/');

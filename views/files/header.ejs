@@ -128,7 +128,7 @@
            style="opacity: .8">
       <span class="brand-text font-weight-light">ETI Admin</span>
     </a>
-
+    
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
@@ -138,7 +138,8 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          Alexander Pierce
+          <%= locals.req.session.name %>
+          <% //console.log(locals.req.session) %>
         </div>
       </a>
       </div>
@@ -185,6 +186,7 @@
               </p>
             </a>
           </li>
+          <% if(locals.req.session.admin_type==1){ %>
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -208,6 +210,7 @@
               </li>
             </ul>
           </li>
+          <% }else if(locals.req.session.admin_type==2){ %>
 
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -231,6 +234,15 @@
                 </a>
               </li>
             </ul>
+          </li>
+          <% } %>
+          <li class="nav-item">
+            <a href="/logout" class="nav-link">
+                <i class="fa fa-sign-out-alt nav-icon"></i>
+              <p>
+                Logout
+              </p>
+            </a>
           </li>
           <!--<li class="nav-item has-treeview">
             <a href="#" class="nav-link">

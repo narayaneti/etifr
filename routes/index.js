@@ -9,6 +9,9 @@ router.use(session({secret: "Narayan, its a secret!",proxy: true,resave: true,sa
 router.get('/', webcontroller.index);
 router.post('/',webcontroller.login);
 
+//logout
+router.get('/logout', webcontroller.logout);
+
 //first-password-change
 router.get('/first-password-change', webcontroller.first_password_change);
 router.post('/first-password-change',webcontroller.first_password_change);
