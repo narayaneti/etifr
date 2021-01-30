@@ -41,7 +41,11 @@ exports.login=function(req,res,next){
             if(result){
                 if(data_decript(req.body.password,result.password)){
                   req.session.admin_id=result._id;
-                  res.redirect('/dashboard');
+                  if(result.password_change==0){
+                    res.redirect('/first-password-change');
+                  }else{
+                    res.redirect('/dashboard');
+                  }
                 }else{
                     res.render('login',{errors:{password:{message:"Invalid password!"}}});
                 }
@@ -138,7 +142,11 @@ exports.forgot_password_otp=(req,res,next)=>{
 
 exports.dashboard=(req,res,next)=>{
   enter(req,res);
-  res.render('dashboard');
+  db.table_data_count(['admin','investors'],function (result) {
+    console.log(result);
+    res.render('dashboard',{count:result});
+  })
+  
 }
 
 exports.add_new_admin=(req,res,next)=>{
@@ -319,4 +327,43 @@ exports.edit_investors=(req,res,next)=>{
   }else{
     res.redirect('/dashboard');
   }
+}
+
+exports.first_password_change=(req,res,next)=>{
+  enter(req,res);
+  if(req.method=='GET'){
+    res.render('first-password-change');
+  }else{
+    const v = new Validator(req.body, {
+      password: 'required|string',
+      conpass: 'required|string|equals:'+req.body.password
+    },{
+      'conpass.required':'The confirm password field is mandatory.',
+      'conpass.equals':'The confirm password must be a equals password.'
+    });
+    v.check().then((matched) => {
+      if (!matched) {
+        console.log(v);
+        res.render('first-password-change',{errors:v.errors});
+      }else{
+        var password=data_encript(req.body.password);
+          db.update_detail_by_condition('admin',{ _id:req.session.admin_id },{password:password,password_change:1},function(result) {
+            delete req.session.forgot_password;
+            res.redirect('/dashboard');
+          });
+      }
+    });
+  }
+}
+
+exports.profile=(req,res,next)=>{
+  enter(req,res);
+  db.select_detail_by_condition('admin',{_id:req.session.admin_id},function(result){
+    if(result.length>0){
+      res.render('profile',{user:result[0]}); 
+    }else{
+      req.session.destroy;
+      res.redirect('/');
+    }
+  });
 }

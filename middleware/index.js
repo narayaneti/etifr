@@ -78,6 +78,23 @@ exports.update_detail_by_condition=function(table,query,data,next){
     })  
 }
 
+
+exports.table_data_count=(tables,next)=>{
+    var table_count=tables.length,i=0,count=[];
+    tables.forEach(table => { 
+        //var table+'model'='';
+        global[table+'model']=MongoClient.model(table,eval(table+'schema'));
+        Promise.all([
+            eval(table+'model').count().exec()
+        ]).then(function(counts) {
+            count[tables[i++]]=counts[0];
+            if(i>=table_count){
+                next(count);
+            }
+        });
+    })
+    
+}
 //conn.once('open',function () {
     /*data=new adminmodel({
         mobile:'9644774397',

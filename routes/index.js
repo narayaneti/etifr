@@ -8,6 +8,11 @@ router.use(session({secret: "Narayan, its a secret!",proxy: true,resave: true,sa
 //login
 router.get('/', webcontroller.index);
 router.post('/',webcontroller.login);
+
+//first-password-change
+router.get('/first-password-change', webcontroller.first_password_change);
+router.post('/first-password-change',webcontroller.first_password_change);
+
 //forget password
 router.get('/forgot-password',webcontroller.forgot_password);
 router.post('/forgot-password',webcontroller.forgot_password);
@@ -41,6 +46,9 @@ router.get('/edit-investors-deatil/:id',webcontroller.edit_investors);
 router.post('/edit-investors-deatil',webcontroller.edit_investors);
 router.post('/edit-investors-deatil/:id',webcontroller.edit_investors);
 
+
+//profile
+router.get('/profile',webcontroller.profile);
 
 
 
