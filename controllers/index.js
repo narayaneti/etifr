@@ -385,3 +385,33 @@ exports.profile=(req,res,next)=>{
     }
   });
 }
+
+exports.change_password=(req,res,next)=>{
+  //enter(req,res);
+  if(!req.session.admin_id){
+    res.redirect('/');
+  }
+  if(req.method=='GET'){
+    res.render('change-password',{req:req});
+  }else{
+    const v = new Validator(req.body, {
+      password: 'required|string',
+      conpass: 'required|string|equals:'+req.body.password
+    },{
+      'conpass.required':'The confirm password field is mandatory.',
+      'conpass.equals':'The confirm password must be a equals password.'
+    });
+    v.check().then((matched) => {
+      if (!matched) {
+        console.log(v);
+        res.render('change-password',{req:req,errors:v.errors});
+      }else{
+        var password=data_encript(req.body.password);
+          db.update_detail_by_condition('admin',{ _id:req.session.admin_id },{password:password,password_change:1},function(result) {
+            delete req.session.forgot_password;
+            res.redirect('/dashboard');
+          });
+      }
+    });
+  }
+}

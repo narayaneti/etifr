@@ -53,6 +53,10 @@ router.post('/edit-investors-deatil/:id',webcontroller.edit_investors);
 //profile
 router.get('/profile',webcontroller.profile);
 
+//profile
+router.get('/change-password',webcontroller.change_password);
+router.post('/change-password',webcontroller.change_password);
+
 
 
 /*router.get('/user',function(req,res,next){
