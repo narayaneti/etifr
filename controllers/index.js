@@ -591,7 +591,7 @@ exports.remainder=(req,res,next)=>{
             var message={
               title:"due Payment",
               body:"new due payment",
-              noti_type:1
+              noti_type:2
             }
             helper.send_push_messge(ids,message);
           }
