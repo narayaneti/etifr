@@ -82,14 +82,14 @@ function isTokenSentToServer() {
 }
 function saveToken(currentToken) {
 	$.ajax({
-		url: base_url('index.php')+"index.php/Home/save_token",
+		url: base_url('index.php')+"/save-token",
 		method: 'post',
 		data: 'token=' + currentToken
 	}).done(function(result){
 		//console.log(result);
 	})
 }
-navigator.serviceWorker.register(base_url('index.php')+'sw.js');
+navigator.serviceWorker.register(base_url('index.php')+'/sw.js');
 if('serviceWorker' in navigator){
 	window.addEventListener('load',()=>{
 		navigator.serviceWorker
@@ -107,7 +107,7 @@ messaging.onMessage(function(payload) {
 		body: payload.data.body,
 		icon: 'https://www.poojapandit.in/web_assets/img/logo.png',
 		vibrate: [200, 100, 200, 100, 200, 100, 200],
-		data:{noti_type:payload.data.noti_type,type:payload.data.type}
+		data:{noti_type:payload.data.noti_id}
 	};
 	Notification.requestPermission(function(result) {
 		if (result === 'granted') {

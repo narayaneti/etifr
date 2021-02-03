@@ -541,3 +541,66 @@ exports.due_payment=(req,res,next)=>{
     });
   });
 }
+
+exports.save_token=(req,res,next)=>{
+  if(req.session.admin_id){
+    if(req.body.token){
+      db.update_detail_by_condition('admin',{_id:req.session.admin_id},{browser_token:req.body.token},function(result){
+        res.end();
+      });
+    }else{
+      res.end();
+    }
+  }else{
+    res.end();
+  }
+}
+
+exports.remainder=(req,res,next)=>{
+  var date=new Date();
+    let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
+    let next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
+    next_date.setDate(next_date.getDate() + 3);
+    db.select_detail_by_condition('investors',{$and: [{next_payment_date:{$gte:current_date}},{next_payment_date:{$lte:next_date}}]},function(result){
+      if(result.length>0){
+        db.select_detail_by_condition('admin',{$and:[{status:1},{admin_type:2},{$ne:{browser_token:''}}]},function(result1){
+          if(result1.length>0){
+            var ids=[],i=0;
+            result1.forEach(function(admin_deatil){
+              ids[i++]=admin_deatil.browser_token;
+            });
+            var message={
+              title:"Upcoming Payment",
+              body:"new upcoming payment",
+              noti_type:1
+            }
+            helper.send_push_messge(ids,message);
+          }
+        })
+      }
+    });
+
+    db.select_detail_by_condition('investors',{next_payment_date:{$lt:current_date}},function(result){
+      if(result.length>0){
+        db.select_detail_by_condition('admin',{$and:[{status:1},{admin_type:1},{browser_token:{$ne:''}}]},function(result1){
+          if(result1.length>0){
+            var ids=[],i=0;
+            result1.forEach(function(admin_deatil){
+              ids[i++]=admin_deatil.browser_token;
+            });
+            var message={
+              title:"due Payment",
+              body:"new due payment",
+              noti_type:1
+            }
+            helper.send_push_messge(ids,message);
+          }
+        })
+      }
+    });
+    res.end();
+}
+exports.test=(req,res,next)=>{
+  helper.send_push_messge();
+  res.end();
+}

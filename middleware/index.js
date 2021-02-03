@@ -8,6 +8,7 @@ var adminschema=new MongoClient.Schema({
     name:String,
     password:String,
     admin_type:String,
+    browser_token:{ type: String, default: '' },
     status:{ type: Number, default: 1 },
     employee_id:String,
     designation:String,
