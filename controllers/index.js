@@ -444,7 +444,7 @@ exports.upcoming_payment=(req,res,next)=>{
     let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
     let next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
     next_date.setDate(next_date.getDate() + 3);
-    db.select_detail_by_condition('investors',{next_payment_date:{$gte:current_date},next_payment_date:{$lte:next_date}},function(result){
+    db.select_detail_by_condition('investors',{$and: [{next_payment_date:{$gte:current_date}},{next_payment_date:{$lte:next_date}}]},function(result){
       console.log(result);
       res.render('upcoming-payment',{req:req,investors_deatils:result});
     });
