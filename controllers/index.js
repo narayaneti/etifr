@@ -6,7 +6,6 @@ const saltRounds = 11;
 const rn = require('random-number');
 var formidable = require('formidable');
 var fs = require('fs');
-var PaytmChecksum = require("paytmChecksum");
 const moment = require('moment');
 
 
