@@ -100,13 +100,13 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="invested_amount">Invested Amount *</label>
-                  <input type="text" required name="invested_amount" class="form-control" id="invested_amount" placeholder="Enter Invested Amount">
+                  <input type="text" required name="invested_amount" class="form-control" id="invested_amount" placeholder="Enter Invested Amount" title="Enter valid Amount" pattern="[1-9][0-9]{1,}">
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="rate_of_interest">Rate of Interest *</label>
-                  <input type="text" required name="rate_of_interest" class="form-control" id="rate_of_interest" placeholder="Enter Rate of Interest">
+                  <input type="text" required name="rate_of_interest" class="form-control" id="rate_of_interest" placeholder="Enter Rate of Interest" title="Enter valid Rate of Interest" pattern="[0-9]{1,}">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -191,6 +191,46 @@
                     </div>
                   </div>
                   <!-- <input type="file" name="pan_card_copy" class="form-control" id="pan_card_copy" placeholder="Enter "> -->
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="payment_day">Day of payment *</label>
+                  <select class="form-control" required name="payment_day" id="payment_day">
+                    <option value="">Select Day of payment</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                  </select>
+                  <!-- <input type="text" name="interest_pay_out_frequencies" class="form-control" id="interest_pay_out_frequencies" placeholder="Enter Interest Pay-out Frequencies"> -->
                 </div>
               </div>
               
@@ -283,21 +323,25 @@
       pan_card_copy: {
         required: true
       },
+      payment_day: {
+        required: true
+      },
     },
     messages: {
-      investor_name:"Please enter a investor name",
-      investor_mobile:"Please enter a investor mobile",
-      investor_address:"Please enter a investor address",
-      invested_amount: "Please enter a invested amount",
-      rate_of_interest:"Please enter a rate of interest",
-      tenure_period_of_investment_month:"Please select a tenure period of investment month",
-      tenure_period_of_investment_year:"Please select a tenure period of investment year",
-      interest_pay_out_frequencies: "Please select a interest pay out frequencies",
-      interest_amount_to_be_paid_in_each_interval:"Please enter a interest amount to be paid in each interval",
-      investor_account_no:"Please enter a investor account no",
-      account_ifsc_code: "Please enter a account ifsc code",
-      pan_card_no:"Please enter a pan card no",
-      pan_card_copy:"Please enter a pan card copy",
+      investor_name:{required:"Please enter a investor name"},
+      investor_mobile:{required:"Please enter a investor mobile"},
+      investor_address:{required:"Please enter a investor address"},
+      invested_amount: {required:"Please enter a invested amount"},
+      rate_of_interest:{required:"Please enter a rate of interest"},
+      tenure_period_of_investment_month:{required:"Please select a tenure period of investment month"},
+      tenure_period_of_investment_year:{required:"Please select a tenure period of investment year"},
+      interest_pay_out_frequencies: {required:"Please select a interest pay out frequencies"},
+      interest_amount_to_be_paid_in_each_interval:{required:"Please enter a interest amount to be paid in each interval"},
+      investor_account_no:{required:"Please enter a investor account no"},
+      account_ifsc_code: {required:"Please enter a account ifsc code"},
+      pan_card_no:{required:"Please enter a pan card no"},
+      pan_card_copy:{required:"Please select a pan card copy",accept:"Only jpg/jpge/png files are allowed!"},
+      payment_day:{required:"Please select a payment day"},
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {

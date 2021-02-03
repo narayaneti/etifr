@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ETI | Admin List</title>
+  <title>ETI | Due Payment</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -32,12 +32,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Admin List</h1>
+            <h1>Due Payment</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-              <li class="breadcrumb-item active">Admin List</li>
+              <li class="breadcrumb-item active">Due Payment</li>
             </ol>
           </div>
         </div>
@@ -63,15 +63,9 @@
               <th>Address</th>
               <th>Invested Amount</th>
               <th>Rate of Interest</th>
-              <th>Tenure/Period of Investment</th>
-              <th>Interest Pay-out Frequencies</th>
               <th>Interest Amount to be paid in each interval</th>
-              <th>Investor Account No.</th>
-              <th>Account IFSC Code</th>
-              <th>PAN Card Number</th>
-              <th>PAN Card Copy </th>
+              <th>Last Payment Date </th>
               <th>Next payment date</th>
-              <th>Status</th>
               <th>Action</th>
             </tr>
             </thead>
@@ -87,13 +81,7 @@
                   <td><%= investors_deatil.investor_address %></td>
                   <td><%= investors_deatil.invested_amount %></td>
                   <td><%= investors_deatil.rate_of_interest %></td>
-                  <td><%= investors_deatil.tenure_period_of_investment_month+'/'+investors_deatil.tenure_period_of_investment_year %></td>
-                  <td><%= investors_deatil.interest_pay_out_frequencies %></td>
                   <td><%= investors_deatil.interest_amount_to_be_paid_in_each_interval %></td>
-                  <td><%= investors_deatil.investor_account_no %></td>
-                  <td><%= investors_deatil.account_ifsc_code %></td>
-                  <td><%= investors_deatil.pan_card_no %></td>
-                  <td><a target="_blank" href="investors/pan_card/<%= investors_deatil.pan_card_copy %>"><i class="fa fa-image"></i></a></td>
                   <td>
                     <% if(investors_deatil.last_payment_date!=null){ 
                       var new_date_ob=new Date(investors_deatil.last_payment_date);
@@ -102,21 +90,17 @@
                     <% } %>
                   </td>
                   <td>
-                    <% if(investors_deatil.status==1){ %>
-                      <span class="badge badge-success">Active</span>
-                    <% }else if(investors_deatil.status==2){ %>
-                      <span class="badge badge-warning">Deactive</span>
-                    <% }else if(investors_deatil.status==0){ %>
-
-                    <% } %>
+                    <% if(investors_deatil.next_payment_date!=null){ 
+                      var new_date_ob=new Date(investors_deatil.next_payment_date);
+                       %>
+                       <%= new_date_ob.getDate() + '/' + (parseInt(new_date_ob.getMonth()) + parseInt(1)) + '/' + new_date_ob.getFullYear() %>
+                   <% } %>
                   </td>
                   <td>
                     <div class="btn-group">
-                        <a title="Edit" class="btn btn-info btn-floating btn-sm" type="button" href="<%= '/edit-investors-deatil/'+investors_deatil._id %>">Edit</a> 
+                        <a title="Payment" class="btn btn-success btn-floating btn-sm" type="button" href="<%= '/payment-investors-deatil/'+investors_deatil._id %>">Payment</a> 
                       
-                        <!-- <a title="Activate Admin" class="btn btn-info btn-floating btn-sm" type="button" href="<%= '/admin-list/activate/'+investors_deatil._id %>">Activate</a>  -->
-                      
-                      <!-- <a title="Delete Admin" class="btn btn-danger btn-floating btn-sm" type="button" href="<%= '/admin-list/delete/'+investors_deatil._id %>">Delete</a> -->
+                       
                     </div>
                   </td>
                 </tr>

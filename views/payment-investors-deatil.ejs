@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AdminLTE 3 | Project Add</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+  <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+  <!-- Navbar -->
+  <% include files/header %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Upcoming Payment</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+              <li class="breadcrumb-item active">Upcoming Paymen</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Bank Detail</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fas fa-minus"></i></button>
+              </div>
+            </div>
+            <div class="card-body">
+              <% if(locals.investors_deatil){ %>
+                <div class="form-group">
+                  <label>Name : </label>
+                  <%= investors_deatil.investor_name %>
+                </div>
+                <div class="form-group">
+                  <label>Amount to be paid in each interval : </label>
+                  <%= investors_deatil.interest_amount_to_be_paid_in_each_interval %>
+                </div>
+
+              <div class="form-group">
+                <label>Account Number : </label>
+                <%= investors_deatil.investor_account_no %>
+              </div>
+              <div class="form-group">
+                <label>IFSC : </label>
+                <%= investors_deatil.account_ifsc_code %>
+              </div>
+              <div class="form-group">
+                <label>Pen Card Number : </label>
+                <%= investors_deatil.pan_card_no %>
+              </div>
+              <% } %>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <div class="col-md-6">
+          <div class="card card-secondary">
+            <div class="card-header">
+              <h3 class="card-title">Transaction</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fas fa-minus"></i></button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+              
+                <% if (locals.errors) { %>
+                      <% Object.values(errors).forEach(function(error){ %>
+  
+                        <div class="col-12 alert alert-danger alert-dismissible fade show" role="alert">
+                          <%= error.message %>
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>   
+                      <% }); %>
+                  <% } %>
+                  <% if (locals.messages) { %>
+                    <% Object.values(messages).forEach(function(message){ %>
+  
+                      <div class="col-12 alert alert-success alert-dismissible fade show" role="alert">
+                        <%= message.message %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>   
+                    <% }); %>
+                    <script>setTimeout(function(){ window.location="/investors-list"; },2000);</script>
+                <% } %>
+              </div>
+              <% if(locals.investors_deatil){ %>
+                <form id="payment-investors-deatil" action="/payment-investors-deatil/<%= investors_deatil._id %>" method="POST">
+                  <div class="form-group">
+                    <label for="inputbankname">Bank Name</label>
+                    <input type="text" name="bank_name" id="inputbankname" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="transaction_amount">Transaction amount</label>
+                    <input type="number" name="transaction_amount" id="transaction_amount" class="form-control" value="<%= investors_deatil.interest_amount_to_be_paid_in_each_interval %>" readonly>
+                    
+                  </div>
+                  <div class="form-group">
+                    <label for="transaction_id">Transaction Id</label>
+                    <input type="number" name="transaction_id" id="transaction_id" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Transaction Date:</label>
+                      <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                          <input type="text" name="date_time" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#reservationdate"/>
+                          <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group text-center">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                  </div>
+                </form>
+              <% } %>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+      </div>
+      
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.5
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- InputMask -->
+<script src="/plugins/moment/moment.min.js"></script>
+<script src="/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/dist/js/adminlte.min.js"></script>
+<!-- jquery-validation -->
+<script src="/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/plugins/jquery-validation/additional-methods.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/dist/js/demo.js"></script>
+<script>
+  $(function () {
+    setTimeout(function(){ 
+      $(".alert").alert('close');
+    }, 10000);
+    $('#reservationdate').datetimepicker({
+        timepicker:true,
+    });
+    $('#payment-investors-deatil').validate({
+      rules: {
+        bank_name:{
+          required: true,
+        },
+        transaction_amount:{
+          required: true,
+        },
+        transaction_id:{
+          required: true,
+        },
+        date_time:{
+          required: true,
+        },
+      },
+      messages: {
+        bankname:"Please enter a bank name",
+        transaction_amount:"Please enter a transaction amount",
+        transaction_id:"Please enter a transaction id",
+        date_time: "Please enter a date time"
+      },
+      errorElement: 'span',
+      errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+      }
+    });
+  });
+</script>
+</body>
+</html>

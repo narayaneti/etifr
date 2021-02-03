@@ -57,6 +57,21 @@ router.get('/profile',webcontroller.profile);
 router.get('/change-password',webcontroller.change_password);
 router.post('/change-password',webcontroller.change_password);
 
+//upcoming next 3 day payment
+router.get('/upcoming-payment',webcontroller.upcoming_payment);
+
+//upcoming next 3 day payment
+router.get('/due-payment',webcontroller.due_payment);
+
+
+//edit-investors
+router.get('/payment-investors-deatil',webcontroller.payment_investors_deatil);
+router.get('/payment-investors-deatil/:id',webcontroller.payment_investors_deatil);
+router.post('/payment-investors-deatil',webcontroller.payment_investors_deatil);
+router.post('/payment-investors-deatil/:id',webcontroller.payment_investors_deatil);
+//payment -invoice
+router.get('/payment-invoice',webcontroller.payment_invoice);
+router.get('/payment-invoice/:id',webcontroller.payment_invoice);
 
 
 /*router.get('/user',function(req,res,next){

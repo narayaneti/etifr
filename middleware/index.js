@@ -29,10 +29,29 @@ var investorsschema=new MongoClient.Schema({
     account_ifsc_code:String,
     pan_card_no:String,
     pan_card_copy:String,
+    payment_day:Number,
     insert_admin_id:String,
+    last_payment_date:{type:Date,default: ''},
+    next_payment_date:{type:Date,default: Date.now},
+    date: { type: Date, default: Date.now },
+    status:{ type: Number, default: 1 }, 
+});
+
+var invested_paymentschema=new MongoClient.Schema({ 
+    investor_id:Object,
+    invoice_id:Number,
+    bank_name:String,
+    transaction_amount:Number,
+    transaction_id:Number,
+    transaction_date_time: Date,
+    investor_account_no:Number,
+    account_ifsc_code:String,
+    pan_card_no:String,
+    admin_id:Object,
     date: { type: Date, default: Date.now },
     status:{ type: Number, default: 1 },
 });
+
 conn.on('connected',function(){
  console.log('connected');
 });
@@ -85,7 +104,7 @@ exports.table_data_count=(tables,next)=>{
         //var table+'model'='';
         global[table+'model']=MongoClient.model(table,eval(table+'schema'));
         Promise.all([
-            eval(table+'model').count().exec()
+            eval(table+'model').countDocuments().exec()
         ]).then(function(counts) {
             count[tables[i++]]=counts[0];
             if(i>=table_count){
@@ -93,6 +112,31 @@ exports.table_data_count=(tables,next)=>{
             }
         });
     })
+    
+}
+ 
+exports.invoice_detail=(id,next)=>{
+    var table='invested_payment';
+    const adminmodel=MongoClient.model(table,eval(table+'schema'));
+    adminmodel.aggregate([
+        {$match:{_id:new MongoClient.Types.ObjectId(id)}},
+        {
+            $lookup:{
+                from: "investors",
+                localField: "investor_id",
+                foreignField: "_id",
+                as: "inventory_docs",
+            },
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$inventory_docs", 0 ] }, "$$ROOT" ] } }
+         },
+         
+         { $project: { inventory_docs: 0 } }
+    ],function (err,res) {
+        if(err) throw err;
+        next(res);
+    });
     
 }
 //conn.once('open',function () {
