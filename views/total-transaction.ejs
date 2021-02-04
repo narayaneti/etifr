@@ -19,6 +19,11 @@
   <link rel="stylesheet" href="/dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <style>
+    .dt-buttons{
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -55,7 +60,7 @@
         </div>-->
         <!-- /.card-header -->
         <div class="card-body">
-          <a href="" download="total-transaction.csv">DOWNLOAD CSV</a>
+          <!-- <a href="" download="total-transaction.csv">DOWNLOAD CSV</a> -->
           <table id="example1" class="table table-bordered table-striped table-hover">
             <thead>
             <tr>
@@ -142,6 +147,7 @@
 <script src="/javascripts/dataTables.buttons.min.js"></script>
 <script src="/javascripts/pdfmake.min.js"></script>
 <script src="/javascripts/vfs_fonts.js"></script>
+<script src="/javascripts/jszip.min.js"></script>
 <script src="/javascripts/buttons.html5.min.js"></script>
 <script>
   $(function () {
@@ -153,46 +159,53 @@
             {
                 extend: 'pdfHtml5',
                 text:'<i class="fas fa-download"></i> DOWNLOAD PDF',
-                filename:'narayan',
-            }
+                filename:'Transaction-List',
+            },
+            {
+            extend: 'excelHtml5',
+            autoFilter: true,
+            sheetName: 'Transaction List',
+            text:'<i class="fas fa-download"></i> DOWNLOAD EXCEL',
+            filename:'Transaction-List',
+        }
         ]
     });
   });
 </script>
 <script>
-  $("a[download]").click(function(){
-      $("#example1").toCSV(this);    
-  });
-  jQuery.fn.toCSV = function(link) {
-    var $link = $(link);
-    var data = $(this).first(); //Only one table
-    var csvData = [];
-    var tmpArr = [];
-    var tmpStr = '';
-    data.find("tr").each(function() {
-        if($(this).find("th").length) {
-            $(this).find("th").each(function() {
-              tmpStr = $(this).text().replace(/"/g, '""');
-              tmpArr.push('"' + tmpStr + '"');
-            });
-            csvData.push(tmpArr);
-        } else {
-            tmpArr = [];
-               $(this).find("td").each(function() {
-                    if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
-                        tmpArr.push(parseFloat($(this).text()));
-                    } else {
-                        tmpStr = $(this).text().replace(/"/g, '""');
-                        tmpArr.push('"' + tmpStr + '"');
-                    }
-               });
-            csvData.push(tmpArr.join(','));
-        }
-    });
-    var output = csvData.join('\n');
-    var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
-    $link.attr("href", uri);
-  }
+  // $("a[download]").click(function(){
+  //     $("#example1").toCSV(this);    
+  // });
+  // jQuery.fn.toCSV = function(link) {
+  //   var $link = $(link);
+  //   var data = $(this).first(); //Only one table
+  //   var csvData = [];
+  //   var tmpArr = [];
+  //   var tmpStr = '';
+  //   data.find("tr").each(function() {
+  //       if($(this).find("th").length) {
+  //           $(this).find("th").each(function() {
+  //             tmpStr = $(this).text().replace(/"/g, '""');
+  //             tmpArr.push('"' + tmpStr + '"');
+  //           });
+  //           csvData.push(tmpArr);
+  //       } else {
+  //           tmpArr = [];
+  //              $(this).find("td").each(function() {
+  //                   if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+  //                       tmpArr.push(parseFloat($(this).text()));
+  //                   } else {
+  //                       tmpStr = $(this).text().replace(/"/g, '""');
+  //                       tmpArr.push('"' + tmpStr + '"');
+  //                   }
+  //              });
+  //           csvData.push(tmpArr.join(','));
+  //       }
+  //   });
+  //   var output = csvData.join('\n');
+  //   var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
+  //   $link.attr("href", uri);
+  // }
   </script>
 </body>
 </html>
