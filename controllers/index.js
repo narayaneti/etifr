@@ -163,8 +163,47 @@ exports.forgot_password_otp=(req,res,next)=>{
 exports.dashboard=(req,res,next)=>{
   enter(req,res,function(){
     db.table_data_count(['admin','investors'],function (result) {
-      //console.log(result);
-      res.render('dashboard',{req:req,count:result});
+      var date=new Date();
+      let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
+      let next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
+      next_date.setDate(next_date.getDate() + 3);
+      db.select_detail_by_condition('investors',{$and: [{next_payment_date:{$gte:current_date}},{next_payment_date:{$lte:next_date}}]},function(result1){
+        result['due_payment']=result1.length;
+        //total_transaction_amount_if_the_day
+        var date=new Date();
+        current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
+        next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T23:59:59.000Z');
+        db.total_transaction_amount_if_the_condiction(current_date,next_date,function(result1){
+          if(result1.length>0){
+            result['total_transaction_amount_if_the_day']=result1[0].totalAmount;
+          }else{
+            result['total_transaction_amount_if_the_day']=0;
+          }
+          var date = new Date();
+          var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+          var firstDayWithSlashes = firstDay.getFullYear()+ '-' + ("0" +(parseInt(firstDay.getMonth()) + parseInt(1))).slice(-2) + '-' +(firstDay.getDate()) + 'T00:00:00.000Z';
+          var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          var lastDayWithSlashes = lastDay.getFullYear()+ '-' + ("0" +(parseInt(lastDay.getMonth()) + parseInt(1))).slice(-2) + '-' +(lastDay.getDate()) + 'T23:59:59.000Z';
+          var lastDay=new Date(lastDayWithSlashes);
+          var firstDay =new Date(firstDayWithSlashes);
+          db.total_transaction_amount_if_the_condiction(firstDay,lastDay,function(result1){
+            if(result1.length>0){
+              result['total_transaction_amount_if_the_month']=result1[0].totalAmount;
+            }else{
+              result['total_transaction_amount_if_the_month']=0;
+            }
+            db.total_transaction_amount(function(result1) {
+              if(result1.length>0){
+                result['total_transaction_amount']=result1[0].totalAmount;
+              }else{
+                result['total_transaction_amount']=0;
+              }
+              console.log(result);
+              res.render('dashboard',{req:req,count:result});
+            })
+          });
+        });
+      });
     })
   });
 }
@@ -494,7 +533,7 @@ exports.payment_investors_deatil=(req,res,next)=>{
                       next_payment_date:new_date_ob
                     };
                     db.update_detail_by_condition('investors',{_id:req.params.id},up_data,function (result2) {
-                      console.log(result2);
+                      res.redirect('/payment-invoice/'+result1._id);
                     })
                   }
                 });
@@ -514,6 +553,7 @@ exports.payment_investors_deatil=(req,res,next)=>{
 exports.payment_invoice=(req,res,next)=>{
   enter(req,res,function(){    
     if(req.params.id){
+      if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
       db.select_one_detail_by_condition('invested_payment',{_id:req.params.id},function(result) {
         if(result){
           db.invoice_detail(req.params.id,function (result) {
@@ -528,7 +568,9 @@ exports.payment_invoice=(req,res,next)=>{
         }
       });
     }
+    }
   });
+  
 }
 
 exports.due_payment=(req,res,next)=>{
@@ -600,6 +642,18 @@ exports.remainder=(req,res,next)=>{
     });
     res.end();
 }
+ 
+exports.total_transaction=(req,res,next)=>{
+  enter(req,res,function(){
+    db.tran_detail(function(result){
+      res.render('total-transaction',{req:req,to_tarn:result});
+    });
+    /*db.select_detail_by_condition('invested_payment',{status:1},function(result){
+      res.render('total-transaction',{req:req});
+    });*/
+  })
+}
+
 exports.test=(req,res,next)=>{
   helper.send_push_messge();
   res.end();

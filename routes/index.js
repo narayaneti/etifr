@@ -76,6 +76,8 @@ router.get('/payment-invoice/:id',webcontroller.payment_invoice);
 router.post('/save-token',webcontroller.save_token);
 
 router.get('/test',webcontroller.remainder);
+
+router.get('/total-transaction',webcontroller.total_transaction);
  
 /*router.get('/user',function(req,res,next){
   MongoClient.connect(MongoClienturl, function(err, db) {

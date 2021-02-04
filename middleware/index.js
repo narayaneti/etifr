@@ -140,6 +140,76 @@ exports.invoice_detail=(id,next)=>{
     });
     
 }
+
+exports.total_transaction_amount_if_the_condiction=(current_date,next_date,next)=>{
+    var table='invested_payment';
+    const adminmodel=MongoClient.model(table,eval(table+'schema'));
+    adminmodel.aggregate([ 
+        {$match:{$and: [{transaction_date_time:{$gte:current_date}},{transaction_date_time:{$lte:next_date}}]}},
+        {
+            $group:{
+                _id: null,
+                totalAmount:{ $sum:"$transaction_amount" }
+            }
+        }
+    ],function (err,res) {
+        if(err) throw err;
+        next(res);
+    });
+}
+
+exports.total_transaction_amount=(next)=>{
+    var table='invested_payment';
+    const adminmodel=MongoClient.model(table,eval(table+'schema'));
+    adminmodel.aggregate([ 
+        {
+            $group:{
+                _id: null,
+                totalAmount:{ $sum:"$transaction_amount" }
+            }
+        }
+    ],function (err,res) {
+        if(err) throw err;
+        next(res);
+    });
+}
+
+exports.tran_detail=(next)=>{
+    var table='invested_payment';
+    const adminmodel=MongoClient.model(table,eval(table+'schema'));
+    adminmodel.aggregate([
+        {
+            $lookup:{
+                from: "investors",
+                let: { investor_id:"$investor_id"},
+                pipeline: [
+                    { $match:
+                        { $expr:
+                           { $and:
+                              [
+                                { $eq: [ "$_id", "$$investor_id"] }
+                              ]
+                           }
+                        }
+                     },
+                    { $project: { investor_name: 1, investor_mobile: 1,_id:0 } }
+                ],
+                as: "inventory_docs",
+            },
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$inventory_docs", 0 ] }, "$$ROOT" ] } }
+         },
+         
+         { $project: { inventory_docs: 0 } },
+         { $sort : { _id : -1 } }
+    ],function (err,res) {
+        if(err) throw err;
+        next(res);
+    });
+    
+}
+
 //conn.once('open',function () {
     /*data=new adminmodel({
         mobile:'9644774397',
