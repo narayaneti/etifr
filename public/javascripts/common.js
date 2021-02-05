@@ -31,7 +31,18 @@ function base_url() {
     }
     return url;
 }
-
+var interval = setInterval(function() {
+	get_notification();
+	account_verify();
+}, 30000);
+function get_notification(){
+	$.get(base_url('index.php')+"/background-notification", function(data, status){
+		data=jQuery.parseJSON(data);
+		$('#new_notifications').html(data.data);
+		$('.home_notification_count').text(data.total_new);
+	});
+}
+get_notification();
 var config = {
 	apiKey: "AIzaSyB5APwS1p6nFc_6qPzdQDlyzczABfZebCU",
     authDomain: "eti-finance-web.firebaseapp.com",

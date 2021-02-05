@@ -14,6 +14,7 @@ var adminschema=new MongoClient.Schema({
     designation:String,
     insert_admin_id:String,
     password_change:{ type: Number, default: 0 },
+    date: { type: Date, default: Date.now },
 });
 
 var investorsschema=new MongoClient.Schema({ 
@@ -51,6 +52,15 @@ var invested_paymentschema=new MongoClient.Schema({
     admin_id:Object,
     date: { type: Date, default: Date.now },
     status:{ type: Number, default: 1 },
+});
+
+var notificationschema=new MongoClient.Schema({ 
+    title:String,
+    body:String,
+    noti_type:Number,
+    admin_id:String,
+    view:{ type:Number,default:0},
+    date: { type: Date, default: Date.now },
 });
 
 conn.on('connected',function(){
@@ -208,6 +218,28 @@ exports.tran_detail=(next)=>{
         next(res);
     });
     
+}
+
+exports.invester_list=(next)=>{
+    var table='investors';
+    const adminmodel=MongoClient.model(table,eval(table+'schema'));
+    adminmodel.aggregate([
+        {
+            $lookup:{
+                from: "invested_payments",
+                localField: "_id",
+                foreignField: "investor_id",
+                as: "inventory_docs",
+            },
+        },
+        { "$addFields": {
+            "total_tran": { "$size": "$inventory_docs" }
+        }},
+        { $unset: "inventory_docs" }
+    ],function (err,res) {
+        if(err) throw err;
+        next(res);
+    });
 }
 
 //conn.once('open',function () {

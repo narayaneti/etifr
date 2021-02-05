@@ -90,7 +90,7 @@ exports.forgot_password=function(req,res,next){
     });
     var query = { mobile: req.body.mobile,admin_type: req.body.admin_type };
     db.select_one_detail_by_condition('admin',query,function(user_detail){
-      console.log(user_detail);
+      //console.log(user_detail);
       if(user_detail){
         var mobile=req.body.mobile;
         //var otp=rn({min:1000,max:9999,integer: true});
@@ -129,7 +129,7 @@ exports.forgot_password_change=(req,res,next)=>{
     });
     v.check().then((matched) => {
       if (!matched) {
-        console.log(v);
+        //console.log(v);
         res.render('forgot-password-change',{req:req,errors:v.errors});
       }else{
         var forgot_password=req.session.forgot_password;
@@ -198,7 +198,7 @@ exports.dashboard=(req,res,next)=>{
               }else{
                 result['total_transaction_amount']=0;
               }
-              console.log(result);
+              //console.log(result);
               res.render('dashboard',{req:req,count:result});
             })
           });
@@ -222,7 +222,7 @@ exports.add_new_admin=(req,res,next)=>{
       });
       v.check().then((matched) => {
         if (!matched) {
-          console.log(v);
+          //console.log(v);
           res.render('add-new-admin',{req:req,errors:v.errors});
         }else{
           db.select_one_detail_by_condition('admin',{mobile:req.body.mobile,admin_type:req.body.admin_type},function (result){
@@ -240,7 +240,7 @@ exports.add_new_admin=(req,res,next)=>{
                 admin_type:req.body.admin_type
               }
               db.insert_data('admin',query,function (result) {
-                console.log(result);
+                //console.log(result);
                 var err={mobile:{message:"Admin added successfully"}};
                 res.render('add-new-admin',{req:req,messages:err});
               });
@@ -264,21 +264,21 @@ exports.admin_list=(req,res,next)=>{
         query.status=0;
       }
       if(query){
-        console.log('hello');
+        //console.log('hello');
         db.update_detail_by_condition('admin',{_id:req.params.id},query,function(result){
-          console.log(result);
+          //console.log(result);
           db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
             res.render('admin-list',{req:req,admin_deatils:result});
           });
         });
       }else{
-        console.log('hello1');
+        //console.log('hello1');
         db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
           res.render('admin-list',{req:req,admin_deatils:result});
         });
       }
     }else{
-      console.log('hello2');
+      //console.log('hello2');
       db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
         res.render('admin-list',{req:req,admin_deatils:result});
       });
@@ -419,7 +419,7 @@ exports.first_password_change=(req,res,next)=>{
       });
       v.check().then((matched) => {
         if (!matched) {
-          console.log(v);
+          //console.log(v);
           res.render('first-password-change',{req:req,errors:v.errors});
         }else{
           var password=data_encript(req.body.password);
@@ -463,7 +463,7 @@ exports.change_password=(req,res,next)=>{
       });
       v.check().then((matched) => {
         if (!matched) {
-          console.log(v);
+          //console.log(v);
           res.render('change-password',{req:req,errors:v.errors});
         }else{
           var password=data_encript(req.body.password);
@@ -484,7 +484,7 @@ exports.upcoming_payment=(req,res,next)=>{
     let next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
     next_date.setDate(next_date.getDate() + 3);
     db.select_detail_by_condition('investors',{$and: [{next_payment_date:{$gte:current_date}},{next_payment_date:{$lte:next_date}}]},function(result){
-      console.log(result);
+      //console.log(result);
       res.render('upcoming-payment',{req:req,investors_deatils:result});
     });
   });
@@ -575,10 +575,12 @@ exports.payment_invoice=(req,res,next)=>{
 
 exports.due_payment=(req,res,next)=>{
   enter(req,res,function(){
+    db.update_detail_by_condition('notification',{admin_id:req.session.admin_id,view:0},{view:1},function(result){
+    });
     var date=new Date();
     let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
     db.select_detail_by_condition('investors',{next_payment_date:{$lt:current_date}},function(result){
-      console.log(result);
+      //console.log(result);
       res.render('due-payment',{req:req,investors_deatils:result});
     });
   });
@@ -597,7 +599,7 @@ exports.save_token=(req,res,next)=>{
     res.end();
   }
 }
-
+ 
 exports.remainder=(req,res,next)=>{
   var date=new Date();
     let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
@@ -617,6 +619,12 @@ exports.remainder=(req,res,next)=>{
               noti_type:1
             }
             helper.send_push_messge(ids,message);
+            result1.forEach(function(admin_deatil){
+              message.admin_id=admin_deatil._id;
+              db.insert_data('notification',message,function(result3){
+                
+              });
+            });
           }
         })
       }
@@ -636,6 +644,12 @@ exports.remainder=(req,res,next)=>{
               noti_type:2
             }
             helper.send_push_messge(ids,message);
+            result1.forEach(function(admin_deatil){
+              message.admin_id=admin_deatil._id;
+              db.insert_data('notification',message,function(result3){
+
+              });
+            });
           }
         })
       }
@@ -645,16 +659,102 @@ exports.remainder=(req,res,next)=>{
  
 exports.total_transaction=(req,res,next)=>{
   enter(req,res,function(){
-    db.tran_detail(function(result){
-      res.render('total-transaction',{req:req,to_tarn:result});
-    });
-    /*db.select_detail_by_condition('invested_payment',{status:1},function(result){
-      res.render('total-transaction',{req:req});
-    });*/
+    if(req.method=="POST"){
+      
+    }else{
+      db.tran_detail(function(result){
+        res.render('total-transaction',{req:req,to_tarn:result});
+      });
+    }
   })
+}
+
+exports.invester_list=(req,res,next)=>{
+  enter(req,res,function(){
+    db.invester_list(function(result) {
+      res.render('total-invester-list',{req:req,to_invs:result});
+    });
+  });
+}
+
+exports.invester_transaction_list=(req,res,next)=>{
+  enter(req,res,function(){
+    if(req.params.id){
+      if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        var MongoClient = require('mongoose');
+        db.select_detail_by_condition('invested_payment',{investor_id:new MongoClient.Types.ObjectId(req.params.id)},function(result){
+          //console.log(result)
+          res.render('invester-transaction-list',{req:req,to_tarn:result});
+        });
+      }else{
+        res.redirect('/dashboard');
+      }
+    }else{
+      res.redirect('/dashboard');
+    }
+  })
+}
+
+exports.admin_list_report=(req,res,next)=>{
+  enter(req,res,function(){
+    if(req.params.action && req.params.id){
+      var query={};
+      if(req.params.action=='deactivate'){
+        query.status=2;
+      }else if(req.params.action=='activate'){
+        query.status=1;
+      }else if(req.params.action=='delete'){
+        query.status=0;
+      }
+      if(query){
+        //console.log('hello');
+        db.update_detail_by_condition('admin',{_id:req.params.id},query,function(result){
+          //console.log(result);
+          db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
+            res.render('report-admin-list',{req:req,admin_deatils:result});
+          });
+        });
+      }else{
+        //console.log('hello1');
+        db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
+          res.render('report-admin-list',{req:req,admin_deatils:result});
+        });
+      }
+    }else{
+      //console.log('hello2');
+      db.select_detail_by_condition('admin',{status:{ $ne: 0 },_id:{ $ne: req.session.admin_id }},function(result){
+        res.render('report-admin-list',{req:req,admin_deatils:result});
+      });
+    }
+  });
+}
+
+exports.background_notification=(req,res,next)=>{
+  if(req.session.admin_id){
+  var MongoClient = require('mongoose');
+  db.select_detail_by_condition('notification',{admin_id:new MongoClient.Types.ObjectId(req.session.admin_id),view:0},function(result){
+    if(result.length>0){
+      res.render('background-notification',{noti:result,moment:moment},function(err,html) {
+        var json_encode = require('json_encode');
+        //console.log(req.session.admin_id)
+        var message={
+          "data":html,
+          "total_new":result.length
+        }
+        //var encoded = json_encode(message);
+        res.send(json_encode(message));
+      });
+    }else{
+      res.end();
+    }
+  })
+}else{
+  res.end();
+}
 }
 
 exports.test=(req,res,next)=>{
   helper.send_push_messge();
   res.end();
 } 
+

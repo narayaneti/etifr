@@ -30,11 +30,12 @@
       <!-- Messages Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">3</span>
+          <!-- <i class="far fa-comments"></i> -->
+          <i class="far fa-bell"></i>
+          <span class="badge badge-danger navbar-badge home_notification_count">0</span>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="#" class="dropdown-item">
+        <div id="new_notifications" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <a href="#" class="dropdown-item d-none">
             <!-- Message Start -->
             <div class="media">
               <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
@@ -49,8 +50,8 @@
             </div>
             <!-- Message End -->
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
+          <div class="dropdown-divider d-none"></div>
+          <a href="#" class="dropdown-item d-none">
             <!-- Message Start -->
             <div class="media">
               <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
@@ -65,8 +66,8 @@
             </div>
             <!-- Message End -->
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
+          <div class="dropdown-divider d-none"></div>
+          <a href="#" class="dropdown-item d-none">
             <!-- Message Start -->
             <div class="media">
               <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
@@ -81,12 +82,12 @@
             </div>
             <!-- Message End -->
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+          <div class="dropdown-divider d-none"></div>
+          <a href="#" class="dropdown-item dropdown-footer d-none">See All Messages</a>
         </div>
       </li>
       <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown d-none">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
           <span class="badge badge-warning navbar-badge">15</span>
@@ -210,6 +211,43 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Report
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/report-admin" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Admin List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/total-transaction" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Transaction</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/report-invester" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Investors List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="/due-payment" class="nav-link">
+                <i class="fa fa-list-ol nav-icon"></i>
+              <p>
+                DUE Payment
+              </p>
+            </a>
+          </li>
           <% }else if(locals.req.session.admin_type==2){ %>
 
           <li class="nav-item has-treeview">
@@ -251,14 +289,30 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="/total-transaction" class="nav-link">
-                <i class="fa fa-list-ol nav-icon"></i>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Total Transaction
+                Report
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/total-transaction" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Transaction</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/report-invester" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Investors List</p>
+                </a>
+              </li>
+            </ul>
           </li>
+          
           <% } %>
           <li class="nav-item">
             <a href="/logout" class="nav-link">

@@ -1,0 +1,30 @@
+
+<% if(locals.noti){ 
+    noti.forEach(function(notifi){
+        var link="https://narayaneti.herokuapp.com/";
+        if (notifi.noti_type == 1) {
+            link = 'https://narayaneti.herokuapp.com/upcoming-payment';
+        } else if (notifi.noti_type == 2) {
+            link = 'https://narayaneti.herokuapp.com/due-payment';
+        } %>
+        <a href="<%= link %>" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle d-none">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  <%= notifi.title %>
+                  <span class="float-right text-sm text-danger d-none"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm"><%= notifi.body %></p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 
+                    <%= moment(notifi.date).format('DD-MM-YYYY h:mm:ss a') %>
+                </p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+   <% });
+
+ } %>

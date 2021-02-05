@@ -106,29 +106,30 @@
             <thead>
             <tr>
               <th>S.no</th>
-              <th>Name</th>
-              <th>Mobile</th>
-              <th>Account No</th>
-              <th>IFSC</th>
-              <th>Transaction ID</th>
+              <th>Invoice Id</th>
               <th>Transaction Amount</th>
+              <th>Transaction ID</th>
+              <th>Account Number</th>
+              <th>IFSC</th>
+              <th>PAN Card</th>
               <th>date</th>
               <th>invoice</th>
             </tr>
             </thead>
             <tbody>
             <% if(locals.to_tarn){ %>
-              <% var i=1 %>
+              <% console.log(to_tarn)
+              var i=1 %>
               <% to_tarn.forEach(function(to_tar){ %>
                 
                 <tr>
                   <td><%= i++ %></td>
-                  <td><%= to_tar.investor_name %></td>
-                  <td><%= to_tar.investor_mobile %></td>
+                  <td><%= to_tar.invoice_id %></td>
+                  <td><%= to_tar.transaction_amount %></td>
+                  <td><%= to_tar.transaction_id %></td>
                   <td><%= to_tar.investor_account_no %></td>
                   <td><%= to_tar.account_ifsc_code %></td>
-                  <td><%= to_tar.transaction_id %></td>
-                  <td><%= to_tar.transaction_amount %></td>
+                  <td><%= to_tar.pan_card_no %></td>
                   <td>
                     <% if(to_tar.transaction_date_time!=null){ 
                       var new_date_ob=new Date(to_tar.transaction_date_time);

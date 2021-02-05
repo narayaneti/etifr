@@ -108,36 +108,38 @@
               <th>S.no</th>
               <th>Name</th>
               <th>Mobile</th>
-              <th>Account No</th>
-              <th>IFSC</th>
-              <th>Transaction ID</th>
-              <th>Transaction Amount</th>
-              <th>date</th>
-              <th>invoice</th>
+              <th>Employee ID</th>
+              <th>Join Date</th>
+              <th>Designation</th>
+              <th>Status</th>
             </tr>
             </thead>
             <tbody>
-            <% if(locals.to_tarn){ %>
+            <% if(locals.admin_deatils){ %>
               <% var i=1 %>
-              <% to_tarn.forEach(function(to_tar){ %>
+              <% admin_deatils.forEach(function(admin_deatil){ %>
                 
                 <tr>
                   <td><%= i++ %></td>
-                  <td><%= to_tar.investor_name %></td>
-                  <td><%= to_tar.investor_mobile %></td>
-                  <td><%= to_tar.investor_account_no %></td>
-                  <td><%= to_tar.account_ifsc_code %></td>
-                  <td><%= to_tar.transaction_id %></td>
-                  <td><%= to_tar.transaction_amount %></td>
+                  <td><%= admin_deatil.name %></td>
+                  <td><%= admin_deatil.mobile %></td>
+                  <td><%= admin_deatil.employee_id %></td>
                   <td>
-                    <% if(to_tar.transaction_date_time!=null){ 
-                      var new_date_ob=new Date(to_tar.transaction_date_time);
+                    <% if(admin_deatil.date!=null){ 
+                      var new_date_ob=new Date(admin_deatil.date);
                       %>
                     <%= new_date_ob.getFullYear() + '-' + ("0" +(parseInt(new_date_ob.getMonth()) + parseInt(1))).slice(-2) + '-' +("0"+new_date_ob.getDate()).slice(-2)  %>
                     <% } %>
                   </td>
+                  <td><%= admin_deatil.designation %></td>
                   <td>
-                    <a title="Generate Invoice" class="btn btn-info btn-floating btn-sm" type="button" href="<%= '/payment-invoice/'+to_tar._id %>">Generate</a> 
+                    <% if(admin_deatil.status==1){ %>
+                      <span class="badge badge-success">Active</span>
+                    <% }else if(admin_deatil.status==2){ %>
+                      <span class="badge badge-warning">Deactive</span>
+                    <% }else if(admin_deatil.status==0){ %>
+
+                    <% } %>
                   </td>
                 </tr>
                 <% }) %>
@@ -280,7 +282,7 @@ maxDateFilter = "";
 $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
     if (typeof aData._date == 'undefined') {
-      aData._date = new Date(aData[7]).getTime();
+      aData._date = new Date(aData[4]).getTime();
       //console.log(aData._date);
     }
 

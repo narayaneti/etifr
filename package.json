@@ -17,6 +17,7 @@
     "express-validator": "^6.9.1",
     "formidable": "^1.2.2",
     "http-errors": "~1.6.3",
+    "json_encode": "^0.1.0",
     "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.13",

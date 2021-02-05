@@ -78,7 +78,17 @@ router.post('/save-token',webcontroller.save_token);
 router.get('/test',webcontroller.remainder);
 
 router.get('/total-transaction',webcontroller.total_transaction);
+router.post('/total-transaction',webcontroller.total_transaction);
  
+router.get('/report-invester',webcontroller.invester_list);
+
+router.get('/invester-transaction-list',webcontroller.invester_transaction_list);
+router.get('/invester-transaction-list/:id',webcontroller.invester_transaction_list);
+
+router.get('/report-admin',webcontroller.admin_list_report);
+router.get('/background-notification',webcontroller.background_notification);
+
+router.get('/test1',webcontroller.test);
 /*router.get('/user',function(req,res,next){
   MongoClient.connect(MongoClienturl, function(err, db) {
     if (err) throw err;

@@ -42,12 +42,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Transaction List</h1>
+            <h1>Investors List</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-              <li class="breadcrumb-item active">Transaction List</li>
+              <li class="breadcrumb-item active">Investors List</li>
             </ol>
           </div>
         </div>
@@ -110,34 +110,31 @@
               <th>Mobile</th>
               <th>Account No</th>
               <th>IFSC</th>
-              <th>Transaction ID</th>
-              <th>Transaction Amount</th>
-              <th>date</th>
-              <th>invoice</th>
+              <th>join date</th>
+              <th>No. of tran.</th>
             </tr>
             </thead>
             <tbody>
-            <% if(locals.to_tarn){ %>
+            <% if(locals.to_invs){ %>
               <% var i=1 %>
-              <% to_tarn.forEach(function(to_tar){ %>
+              <% to_invs.forEach(function(to_inv){ %>
                 
                 <tr>
                   <td><%= i++ %></td>
-                  <td><%= to_tar.investor_name %></td>
-                  <td><%= to_tar.investor_mobile %></td>
-                  <td><%= to_tar.investor_account_no %></td>
-                  <td><%= to_tar.account_ifsc_code %></td>
-                  <td><%= to_tar.transaction_id %></td>
-                  <td><%= to_tar.transaction_amount %></td>
+                  <td><%= to_inv.investor_name %></td>
+                  <td><%= to_inv.investor_mobile %></td>
+                  <td><%= to_inv.investor_account_no %></td>
+                  <td><%= to_inv.account_ifsc_code %></td>
                   <td>
-                    <% if(to_tar.transaction_date_time!=null){ 
-                      var new_date_ob=new Date(to_tar.transaction_date_time);
+                    <% if(to_inv.date!=null){ 
+                      var new_date_ob=new Date(to_inv.date);
                       %>
                     <%= new_date_ob.getFullYear() + '-' + ("0" +(parseInt(new_date_ob.getMonth()) + parseInt(1))).slice(-2) + '-' +("0"+new_date_ob.getDate()).slice(-2)  %>
                     <% } %>
                   </td>
                   <td>
-                    <a title="Generate Invoice" class="btn btn-info btn-floating btn-sm" type="button" href="<%= '/payment-invoice/'+to_tar._id %>">Generate</a> 
+                    <a title="Generate Invoice" class="btn btn-info btn-floating btn-sm" type="button" href="<% if(to_inv.total_tran!=0){ %><%= '/invester-transaction-list/'+to_inv._id %><% }else{ %>#<% } %>">
+                      <%= to_inv.total_tran %></a> 
                   </td>
                 </tr>
                 <% }) %>
@@ -280,7 +277,7 @@ maxDateFilter = "";
 $.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
     if (typeof aData._date == 'undefined') {
-      aData._date = new Date(aData[7]).getTime();
+      aData._date = new Date(aData[5]).getTime();
       //console.log(aData._date);
     }
 
