@@ -479,6 +479,8 @@ exports.change_password=(req,res,next)=>{
 
 exports.upcoming_payment=(req,res,next)=>{
   enter(req,res,function(){
+    db.update_detail_by_condition('notification',{admin_id:req.session.admin_id,view:0,noti_type:2},{view:1},function(result){
+    });
     var date=new Date();
     let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
     let next_date= new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
@@ -575,7 +577,7 @@ exports.payment_invoice=(req,res,next)=>{
 
 exports.due_payment=(req,res,next)=>{
   enter(req,res,function(){
-    db.update_detail_by_condition('notification',{admin_id:req.session.admin_id,view:0},{view:1},function(result){
+    db.update_detail_by_condition('notification',{admin_id:req.session.admin_id,view:0,noti_type:2},{view:1},function(result){
     });
     var date=new Date();
     let current_date = new Date(date.getFullYear()+'-'+("0" +(parseInt(date.getMonth()) + parseInt(1))).slice(-2)+'-'+("0" +date.getDate()).slice(-2)+'T00:00:00.000Z');
