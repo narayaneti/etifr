@@ -95,8 +95,8 @@
                   <td><%= investors_deatil.pan_card_no %></td>
                   <td><a target="_blank" href="investors/pan_card/<%= investors_deatil.pan_card_copy %>"><i class="fa fa-image"></i></a></td>
                   <td>
-                    <% if(investors_deatil.last_payment_date!=null){ 
-                      var new_date_ob=new Date(investors_deatil.last_payment_date);
+                    <% if(investors_deatil.next_payment_date!=null){ 
+                      var new_date_ob=new Date(investors_deatil.next_payment_date);
                       %>
                     <%= new_date_ob.getDate() + '/' + (parseInt(new_date_ob.getMonth()) + parseInt(1)) + '/' + new_date_ob.getFullYear() %>
                     <% } %>
