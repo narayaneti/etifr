@@ -527,7 +527,7 @@ exports.payment_investors_deatil=(req,res,next)=>{
                     db.select_detail_by_condition('invested_payment',{invoice_id:invoice_no},function(result4){
                       if(result4.length>0){
                         in_data.invoice_id=invoice_no;
-                        break;
+                        return;
                       }
                     })
                   }
