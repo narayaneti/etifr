@@ -495,57 +495,59 @@ exports.upcoming_payment=(req,res,next)=>{
 exports.payment_investors_deatil=(req,res,next)=>{
   enter(req,res,function(){
     if(req.params.id){
-      db.select_one_detail_by_condition('investors',{_id:req.params.id},function(result) {
-        if(result){
-          if(req.method=='GET'){
-            res.render('payment-investors-deatil',{req:req,investors_deatil:result});
+      if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        db.select_one_detail_by_condition('investors',{_id:req.params.id},function(result) {
+          if(result){
+            if(req.method=='GET'){
+              res.render('payment-investors-deatil',{req:req,investors_deatil:result});
+            }else{
+              const v = new Validator(req.body, {
+                bank_name: 'required|string',
+                transaction_amount: 'required|integer',
+                transaction_id: 'required|integer',
+                date_time: 'required|string',
+              });
+              v.check().then((matched) => {
+                if (!matched) {
+                  res.render('payment-investors-deatil',{req:req,investors_deatil:result,errors:v.errors});
+                }else{
+                  var in_data={
+                    investor_id: result._id,
+                    bank_name: req.body.bank_name,
+                    transaction_amount: req.body.transaction_amount,
+                    transaction_id: req.body.transaction_id,
+                    transaction_date_time: new Date(req.body.date_time),
+                    investor_account_no:result.investor_account_no,
+                    account_ifsc_code:result.account_ifsc_code,
+                    pan_card_no:result.pan_card_no,
+                    admin_id:req.session.admin_id,
+                  };
+                  db.insert_data('invested_payment',in_data,function (result1) {
+                    if(result1){
+                        var date_ob=new Date(req.body.date_time);
+                        var payment_day=0;
+                        if(result.payment_day && result.payment_day >=0 && result.payment_day<=28){
+                          payment_day=result.payment_day;
+                        }
+                        var new_date_ob=new Date(date_ob.getFullYear(), (parseInt(date_ob.getMonth()) + parseInt(result.interest_pay_out_frequencies)), payment_day);
+                    
+                      var up_data={
+                        last_payment_date:new Date(req.body.date_time),
+                        next_payment_date:new_date_ob
+                      };
+                      db.update_detail_by_condition('investors',{_id:req.params.id},up_data,function (result2) {
+                        res.redirect('/payment-invoice/'+result1._id);
+                      })
+                    }
+                  });
+                }
+              });
+            }
           }else{
-            const v = new Validator(req.body, {
-              bank_name: 'required|string',
-              transaction_amount: 'required|integer',
-              transaction_id: 'required|integer',
-              date_time: 'required|string',
-            });
-            v.check().then((matched) => {
-              if (!matched) {
-                res.render('payment-investors-deatil',{req:req,investors_deatil:result,errors:v.errors});
-              }else{
-                var in_data={
-                  investor_id: result._id,
-                  bank_name: req.body.bank_name,
-                  transaction_amount: req.body.transaction_amount,
-                  transaction_id: req.body.transaction_id,
-                  transaction_date_time: new Date(req.body.date_time),
-                  investor_account_no:result.investor_account_no,
-                  account_ifsc_code:result.account_ifsc_code,
-                  pan_card_no:result.pan_card_no,
-                  admin_id:req.session.admin_id,
-                };
-                db.insert_data('invested_payment',in_data,function (result1) {
-                  if(result1){
-                      var date_ob=new Date(req.body.date_time);
-                      var payment_day=0;
-                      if(result.payment_day && result.payment_day >=0 && result.payment_day<=28){
-                        payment_day=result.payment_day;
-                      }
-                      var new_date_ob=new Date(date_ob.getFullYear(), (parseInt(date_ob.getMonth()) + parseInt(result.interest_pay_out_frequencies)), payment_day);
-                  
-                    var up_data={
-                      last_payment_date:new Date(req.body.date_time),
-                      next_payment_date:new_date_ob
-                    };
-                    db.update_detail_by_condition('investors',{_id:req.params.id},up_data,function (result2) {
-                      res.redirect('/payment-invoice/'+result1._id);
-                    })
-                  }
-                });
-              }
-            });
+            res.redirect('/upcoming-payment');
           }
-        }else{
-          res.redirect('/upcoming-payment');
-        }
-      });
+        });
+      }
     }else{
       res.redirect('/upcoming-payment');
     }
