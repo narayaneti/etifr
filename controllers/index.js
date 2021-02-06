@@ -611,7 +611,7 @@ exports.remainder=(req,res,next)=>{
     next_date.setDate(next_date.getDate() + 3);
     db.select_detail_by_condition('investors',{$and: [{next_payment_date:{$gte:current_date}},{next_payment_date:{$lte:next_date}}]},function(result){
       if(result.length>0){
-        db.select_detail_by_condition('admin',{$and:[{status:1},{admin_type:2},{$ne:{browser_token:''}}]},function(result1){
+        db.select_detail_by_condition('admin',{$and:[{status:1},{admin_type:2},{browser_token:{$ne:''}}]},function(result1){
           if(result1.length>0){
             var ids=[],i=0;
             result1.forEach(function(admin_deatil){
