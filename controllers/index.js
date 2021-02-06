@@ -522,6 +522,15 @@ exports.payment_investors_deatil=(req,res,next)=>{
                     pan_card_no:result.pan_card_no,
                     admin_id:req.session.admin_id,
                   };
+                  while(1){
+                    var invoice_no=rn({min:1000,max:999999,integer: true});
+                    db.select_detail_by_condition('invested_payment',{invoice_id:invoice_no},function(result4){
+                      if(result4.length>0){
+                        in_data.invoice_id=invoice_no;
+                        break;
+                      }
+                    })
+                  }
                   db.insert_data('invested_payment',in_data,function (result1) {
                     if(result1){
                         var date_ob=new Date(req.body.date_time);
