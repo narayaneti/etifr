@@ -1,6 +1,6 @@
 var MongoClient = require('mongoose');
-// MongoClient.connect('mongodb://localhost:27017/eti_investment', { useUnifiedTopology: true, useNewUrlParser: true  });
-MongoClient.connect('mongodb+srv://narayan727:Narayan@704@cluster0.5mp0z.mongodb.net/eti?retryWrites=true&w=majority', { useUnifiedTopology: true, useNewUrlParser: true  });
+MongoClient.connect('mongodb://localhost:27017/eti_investment', { useUnifiedTopology: true, useNewUrlParser: true  });
+// MongoClient.connect('mongodb+srv://narayan727:Narayan@704@cluster0.5mp0z.mongodb.net/eti?retryWrites=true&w=majority', { useUnifiedTopology: true, useNewUrlParser: true  });
 var conn=MongoClient.connection;
 
 var adminschema=new MongoClient.Schema({ 
