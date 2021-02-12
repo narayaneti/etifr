@@ -9,6 +9,7 @@ var fs = require('fs');
 const moment = require('moment');
 
 
+
 function data_encript(data){
   return bcrypt.hashSync(data, saltRounds);
 }
@@ -216,7 +217,7 @@ exports.add_new_admin=(req,res,next)=>{
       const v = new Validator(req.body, {
         name: 'required|string',
         employee_id: 'required|string',
-        mobile: 'required|string',
+        mobile: 'required|integer',
         designation: 'required|string',
         admin_type: 'required|string'
       });
@@ -760,7 +761,12 @@ exports.background_notification=(req,res,next)=>{
 }
 
 exports.test=(req,res,next)=>{
-  helper.send_push_messge();
+  //console.log((stripHtml(`Some      text <b>and</b> text.`).result).replace(/\s+/g, ' ').trim());
+  var data={
+    name:"Narayan",
+    age:23
+  }
+  console.log(helper.data_validate(data));
   res.end();
 } 
 

@@ -26,6 +26,7 @@
     "paytmchecksum": "^1.5.0",
     "random-number": "0.0.9",
     "request": "^2.88.2",
+    "string-strip-html": "^8.1.0",
     "urlencode": "^1.1.0"
   }
 }

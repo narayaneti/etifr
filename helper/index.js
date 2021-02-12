@@ -33,4 +33,13 @@ exports.send_push_messge=(ids,message)=>{
       });
 }
 
+exports.data_validate=(data)=>{
+  const { stripHtml } = require("string-strip-html");
+  result={};
+  Object.entries(data).forEach(([key, value]) => {
+    result[key]=(stripHtml(value).result).replace(/\s+/g, ' ').trim();
+  });
+  return result;
+}
+
 

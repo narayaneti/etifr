@@ -92,7 +92,7 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="mobile_number">Mobile Number *</label>
-                  <input type="tel" name="mobile" class="form-control" id="mobile_number" placeholder="Enter Mobile Number">
+                  <input type="tel" name="mobile" class="form-control" id="mobile_number" placeholder="Enter Mobile Number" title="Enter valid mobile number" minlength="5" maxlength="10" size="10" autocomplete="off" pattern="[6789][0-9]{9}">
                 </div>
               </div>
               <div class="col-sm-6">
@@ -180,11 +180,11 @@
       },
     },
     messages: {
-      name:"Please enter a name",
-      employee_id:"Please enter a employee id",
-      mobile:"Please enter a mobile Number",
-      designation: "Please enter a designation",
-      admin_type: "Please enter a role"
+      name:{required:"Please enter a name"},
+      employee_id:{required:"Please enter a employee id"},
+      mobile:{required:"Please enter a mobile Number"},
+      designation: {required:"Please enter a designation"},
+      admin_type: {required:"Please enter a role"}
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {
